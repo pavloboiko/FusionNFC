@@ -14,7 +14,7 @@ public struct NFCTextRecord {
     public let locale: Locale
 }
 
-enum SessionUsage {
+public enum SessionUsage {
     case none
     case read
     case write
