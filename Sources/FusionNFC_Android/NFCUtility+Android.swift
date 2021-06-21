@@ -28,6 +28,7 @@ extension NFCUtility: NFCUtilityProtocol {
     }
     
     public func readTag(_ completion: @escaping (NFCMessage?) -> Void) {
+    	print("pavlo read Tag called")
 		enableNfcForegroundDispatch()
 		guard let receiver = self.receiver else {
 			completion(nil)
@@ -40,10 +41,12 @@ extension NFCUtility: NFCUtilityProtocol {
     }
     
     private func enableNfcForegroundDispatch() {
+        print("pavlo start enable")
 //        let intent = self.currentActivity?.getIntent()?.addFlags(flags: Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		let intent =  Intent(packageContext: self.currentActivity, cls: self.receiver)
-        let nfcPendingIntent = PendingIntent.getActivity(context: self.currentActivity, requestCode: 0, intent: intent, flags: 0)
+        let nfcPendingIntent = PendingIntent.getBroadcast(context: self.currentActivity, requestCode: 0, intent: intent, flags: 0)
         self.adapter?.enableForegroundDispatch(activity: self.currentActivity, intent: nfcPendingIntent, filters: [], techLists: [])
+        print("pavlo end enable")        
     }
     
     private func disableNfcForegroundDispatch() {
