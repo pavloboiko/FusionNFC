@@ -31,7 +31,7 @@ List of features
 
 API
 ---
-Please find the api here [API](../Sources/FusionNFC_Common/NFCUtility.swift)
+Please find the api here [API](./Sources/FusionNFC_Common/NFCUtility.swift)
 
 Permission Settings
 -------------------
