@@ -53,18 +53,3 @@ extension NFCUtility: NFCUtilityProtocol {
 		self.adapter?.disableForegroundDispatch(activity: self.currentActivity)
 	}
 }
-
-class NFCReceiver: Object, BroadcastReceiver {
-	var receiver: ((NFCMessage?) -> Void)?
-	public func onReceive(context: Context?, intent: Intent?) {
-	    var uriRecord: NFCURIRecord?
-        if let url = URL(string: "https://pavlo.com/") {
-            uriRecord = NFCURIRecord(url: url)
-        }
-        
-        let textRecord = NFCTextRecord(string: "Pavlo Test NFC", locale: Locale(identifier: "en"))
-        let nfcMessage = NFCMessage(uriRecord: uriRecord, textRecord: textRecord)
-        receiver?(nfcMessage)
-		print("Pavlo really?")
-    }    
-}
