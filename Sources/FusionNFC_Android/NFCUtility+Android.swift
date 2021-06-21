@@ -8,25 +8,30 @@ import AndroidNFC
 import FusionLocation_Common
 
 public class NFCManager {
-
-	typealias AndroidLocationManager = AndroidLocation.LocationManager
-
 	private var currentActivity: Activity? { Application.currentActivity }
-
-	private let locationManager: AndroidLocationManager?
-	private let locationListener: LocationListener
+	private var adapter: NfcAdapter? = null  
   
-	public let usage: LocationUsage
-	public var isOnlyOnce: Bool = false
-  
-  
-	public required init(usage: LocationUsage) {
-		self.usage = usage
-
-		self.locationManager =
-			Application.currentActivity?.getSystemService(name: ContextStatic.LOCATION_SERVICE)
-			as? AndroidLocationManager
-  
-		self.locationListener = LocationListener()    
+	public required init(alertMessage: String) {
+		let nfcManager = self.currentActivity?.getSystemService(ContextStatic.NFC_SERVICE) as? NfcManager
+        self.adapter = nfcManager.getDefaultAdapter()
 	}
+}
+
+extension NFCUtility: NFCUtilityProtocol {
+    public static var readingAvailable: Bool {
+        return true
+    }
+    
+    public func readTag(_ completion: @escaping (NFCMessage?) -> Void) {
+       try {
+            let intent = self.currentActivity?.getIntent()?.addFlags(IntentStatic.FLAG_ACTIVITY_SINGLE_TOP)
+            let nfcPendingIntent = PendingIntent.getActivity(self.currentActivity, 0, intent, 0)
+            adapter?.enableForegroundDispatch(self.currentActivity, nfcPendingIntent, null, null)
+        } catch (ex: IllegalStateException) {
+            Log.e(getTag(), "Error enabling NFC foreground dispatch", ex)
+        }
+    }
+    
+    public func writeTag(_ message: NFCMessage) {
+    }
 }
