@@ -4,6 +4,7 @@ The FusionLocation SPM package makes it possible to use NFC functionality on And
 Discuss
 -------
 Join our slack channel here for Fusion Package discussion [link](https://scadeio.slack.com/archives/C025WRG18TW)
+For native cross plaform development with Swift and geneel Nimble introduciton, go here [Fusion](beta.scade.io/fusion)
 
 Install in SPM
 --------------
