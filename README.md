@@ -20,7 +20,7 @@ Our demo app is available here TODO add link later
 Basic Usage
 -----------
 ```swift
-/// Add swift spm code here
+/// Add swift example code here
 ```
 
 Features
