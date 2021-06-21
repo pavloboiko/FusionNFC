@@ -23,13 +23,9 @@ extension NFCUtility: NFCUtilityProtocol {
     }
     
     public func readTag(_ completion: @escaping (NFCMessage?) -> Void) {
-       try {
-            let intent = self.currentActivity?.getIntent()?.addFlags(IntentStatic.FLAG_ACTIVITY_SINGLE_TOP)
-            let nfcPendingIntent = PendingIntent.getActivity(self.currentActivity, 0, intent, 0)
-            adapter?.enableForegroundDispatch(self.currentActivity, nfcPendingIntent, null, null)
-        } catch (ex: IllegalStateException) {
-            Log.e(getTag(), "Error enabling NFC foreground dispatch", ex)
-        }
+        let intent = self.currentActivity?.getIntent()?.addFlags(IntentStatic.FLAG_ACTIVITY_SINGLE_TOP)
+        let nfcPendingIntent = PendingIntent.getActivity(self.currentActivity, 0, intent, 0)
+        self.adapter?.enableForegroundDispatch(self.currentActivity, nfcPendingIntent, null, null)
     }
     
     public func writeTag(_ message: NFCMessage) {
