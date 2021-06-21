@@ -7,8 +7,8 @@ Join our slack channel here for Fusion Package discussion [link](https://scadeio
 
 For native cross plaform development with Swift and geneel Fusion introduciton, go here [SCADE Fusion](beta.scade.io/fusion)
 
-Install in SPM
---------------
+Install - Add to Package.swift
+------------------------------
 ```swift
 /// Add swift spm code here
 ```
