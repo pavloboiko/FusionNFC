@@ -37,7 +37,7 @@ let package = Package(
               .target(name: "FusionNFC_Common"),
               .product(name: "Android", package: "Android", condition: .when(platforms: [.android])),
               .product(name: "AndroidOS", package: "Android", condition: .when(platforms: [.android])),
-              .product(name: "AndroidLocation", package: "Android", condition: .when(platforms: [.android]))              
+              .product(name: "AndroidNFC", package: "Android", condition: .when(platforms: [.android]))              
             ],
             resources: [.copy("Generated/FusionNFC_Android.java")]         
         )
