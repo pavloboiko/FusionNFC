@@ -5,7 +5,7 @@ import AndroidApp
 import AndroidContent
 import AndroidNFC
 
-import FusionLocation_Common
+import FusionNFC_Common
 
 public class NFCManager {
 	private var currentActivity: Activity? { Application.currentActivity }
