@@ -1,3 +1,4 @@
+import Foundation
 import Java
 import Android
 import AndroidOS
@@ -53,6 +54,14 @@ extension NFCUtility: NFCUtilityProtocol {
 class NFCReceiver: Object, BroadcastReceiver {
 	var receiver: ((NFCMessage?) -> Void)?
 	public func onReceive(context: Context?, intent: Intent?) {
-		print("hongTae really?")
+	    var uriRecord: NFCURIRecord?
+        if let url = URL(string: "https://pavlo.com/") {
+            uriRecord = NFCURIRecord(url: url)
+        }
+        
+        let textRecord = NFCTextRecord(string: "Pavlo Test NFC", locale: Locale(identifier: "en"))
+        let nfcMessage = NFCMessage(uriRecord: uriRecord, textRecord: textRecord)
+        receiver?(nfcMessage)
+		print("Pavlo really?")
     }    
 }
