@@ -1,5 +1,5 @@
 # FusionNFC
-The FusionLocation SPM package makes it possible to use NFC functionality on Android and iOS using Swift 
+The FusionNFC SPM package makes it possible to use NFC functionality on Android and iOS using Swift 
 
 Discuss
 -------
