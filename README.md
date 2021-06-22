@@ -12,7 +12,9 @@ Install - Add to Package.swift
 ```swift
 /// Add swift spm code here
 ```
-
+Permission Settings
+-------------------
+<Add Permission specific text and instructions>
 
 Demo App
 --------
@@ -35,7 +37,4 @@ API
 ---
 Please find the api here [API](./Sources/FusionNFC_Common/NFCUtility.swift)
 
-Permission Settings
--------------------
-<Add Permission specific text and instructions>
 
