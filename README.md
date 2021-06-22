@@ -12,10 +12,15 @@ Install - Add to Package.swift
 ```swift
 /// Add swift spm code here
 ```
+
 Permission Settings
 -------------------
 <Add Permission specific text and instructions>
 
+```yaml
+
+```
+  
 Demo App
 --------
 Our demo app is available here TODO add link later
