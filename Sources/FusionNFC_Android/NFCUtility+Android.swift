@@ -42,8 +42,9 @@ extension NFCUtility: NFCUtilityProtocol {
     
     private func enableNfcForegroundDispatch() {
         print("pavlo start enable")
+        let receiver = NFCReceiver()
 //        let intent = self.currentActivity?.getIntent()?.addFlags(flags: Intent.FLAG_ACTIVITY_SINGLE_TOP)
-		let intent =  Intent(packageContext: self.currentActivity, cls: Class<NFCReceiver>())
+		let intent =  Intent(packageContext: self.currentActivity, cls: receiver.getClass())
         let nfcPendingIntent = PendingIntent.getBroadcast(context: self.currentActivity, requestCode: 0, intent: intent, flags: 0)
         self.adapter?.enableForegroundDispatch(activity: self.currentActivity, intent: nfcPendingIntent, filters: [], techLists: [])
         print("pavlo end enable")        
