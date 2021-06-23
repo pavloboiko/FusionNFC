@@ -11,15 +11,12 @@ import FusionNFC_Common
 public class NFCUtility {
 	private var currentActivity: Activity? { Application.currentActivity }
 	private var adapter: NfcAdapter? = nil  
-//	private var receiver: Class<NFCReceiver>?
+	private let receiver = NFCReceiver()
   
 	public required init(alertMessage: String) {
 		let nfcManager = self.currentActivity?.getSystemService(name: ContextStatic.NFC_SERVICE) as? NfcManager
         self.adapter = nfcManager?.getDefaultAdapter()
-//        self.receiver = Class<NFCReceiver>()
 	}
-	
-
 }
 
 extension NFCUtility: NFCUtilityProtocol {
@@ -30,11 +27,8 @@ extension NFCUtility: NFCUtilityProtocol {
     public func readTag(_ completion: @escaping (NFCMessage?) -> Void) {
     	print("pavlo read Tag called")
 		enableNfcForegroundDispatch()
-//		guard let receiver = self.receiver else {
-//			completion(nil)
-//			return
-//		}
-//		receiver.cast(obj: NFCReceiver())?.receiver = completion
+
+		receiver.receiver = completion
     }
     
     public func writeTag(_ message: NFCMessage) {
@@ -45,6 +39,7 @@ extension NFCUtility: NFCUtilityProtocol {
         let receiver = NFCReceiver()
 //        let intent = self.currentActivity?.getIntent()?.addFlags(flags: Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		let intent =  Intent(packageContext: self.currentActivity, cls: receiver.getClass())
+		print("pavlo receiver get class = \(receiver.getClass())")
         let nfcPendingIntent = PendingIntent.getBroadcast(context: self.currentActivity, requestCode: 0, intent: intent, flags: 0)
         self.adapter?.enableForegroundDispatch(activity: self.currentActivity, intent: nfcPendingIntent, filters: [], techLists: [])
         print("pavlo end enable")        
