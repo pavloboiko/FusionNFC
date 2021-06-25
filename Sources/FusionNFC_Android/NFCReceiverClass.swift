@@ -20,5 +20,9 @@ public class NFCReceiver: Object, BroadcastReceiver {
 //        let nfcMessage = NFCMessage(uriRecord: uriRecord, textRecord: textRecord)
 //        receiver?(nfcMessage)
 		print("Pavlo really?")
-    }    
+    }
+    
+    static func pavlo(context: Context?, intent: Intent?) {
+    	print("Pavlo static func")
+    }
 }
