@@ -80,6 +80,8 @@ public class NFCReceiver: Object, BroadcastReceiver {
             	print("Pavlo return nil cause of msg")
             	NFCReceiver.shared.receiver?(nil)
             } else {
+            	print("Pavlo didReceive messages count = \(msgs.count)")
+            	print("Pavlo didReceive messages = \(msgs)")            	
             	let nfcMessage = parse(message: msgs[0])
             	if nfcMessage.textRecord != nil || nfcMessage.uriRecord != nil {
             		NFCReceiver.shared.receiver?(parse(message: msgs[0]))	
