@@ -213,7 +213,7 @@ extension NFCTextRecord {
         print("Pavlo NFCTextRecord first passed!")
 		let payload = record.getPayload()
 		let uintArray = payload.map { UInt8(bitPattern: $0) }
-		
+        print("Pavlo NFCTextRecord second passed!")		
         /*
          * payload[0] contains the "Status Byte Encodings" field, per the
          * NFC Forum "Text Record Type Definition" section 3.2.1.
@@ -229,13 +229,15 @@ extension NFCTextRecord {
          */
         let textEncoding: String.Encoding = ((uintArray[0] & 0200) == 0) ? .utf8 : .utf16
         let languageCodeLength = Int(uintArray[0] & 0077)
-        
+        print("Pavlo NFCTextRecord third passed!")
         guard let languageCode = String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii),
               let text = String(bytes: uintArray[languageCodeLength + 1..<payload.count - languageCodeLength - 1], encoding: textEncoding) else {
             return nil
         }
-        
-        return NFCTextRecord(string: text, locale: Locale(identifier: languageCode))
+        print("Pavlo NFCTextRecord fourth passed! text = \(text) code = \(languageCode)")
+        let textRecord = NFCTextRecord(string: text, locale: Locale(identifier: languageCode))
+        print("Pavlo NFCTextRecord final passed!")
+        return textRecord
 	}
 	
 	static func getDefault(_ record: NdefRecord?) -> NFCTextRecord? {
