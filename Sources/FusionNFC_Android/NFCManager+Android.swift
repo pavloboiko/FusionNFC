@@ -229,9 +229,12 @@ extension NFCTextRecord {
          */
         let textEncoding: String.Encoding = ((uintArray[0] & 0200) == 0) ? .utf8 : .utf16
         let languageCodeLength = Int(uintArray[0] & 0077)
-        print("Pavlo NFCTextRecord third passed!")
+        print("Pavlo NFCTextRecord third passed! textEncoding = \(textEncoding) length = \(languageCodeLength)")
+        print("Pavlo NFCTextRecord third passed! langcode = \(String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii))")
+        print("Pavlo NFCTextRecord third passed! text = \(String(bytes: uintArray[languageCodeLength + 1..<uintArray.count - languageCodeLength - 1], encoding: textEncoding))")
+        
         guard let languageCode = String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii),
-              let text = String(bytes: uintArray[languageCodeLength + 1..<payload.count - languageCodeLength - 1], encoding: textEncoding) else {
+              let text = String(bytes: uintArray[languageCodeLength + 1..<uintArray.count - languageCodeLength - 1], encoding: textEncoding) else {
             return nil
         }
         print("Pavlo NFCTextRecord fourth passed! text = \(text) code = \(languageCode)")
