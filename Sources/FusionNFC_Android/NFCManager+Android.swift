@@ -8,7 +8,7 @@ import AndroidNFC
 
 import FusionNFC_Common
 
-public class NFCUtility {
+public class NFCManager {
 	private var currentActivity: Activity? { Application.currentActivity }
 	private var adapter: NfcAdapter? = nil  
 	private let receiver = NFCReceiver()
@@ -19,7 +19,7 @@ public class NFCUtility {
 	}
 }
 
-extension NFCUtility: NFCUtilityProtocol {
+extension NFCManager: NFCManagerProtocol {
     public static var readingAvailable: Bool {
         return true
     }
