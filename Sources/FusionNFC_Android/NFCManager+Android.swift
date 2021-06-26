@@ -48,3 +48,13 @@ extension NFCUtility: NFCUtilityProtocol {
 		self.adapter?.disableForegroundDispatch(activity: self.currentActivity)
 	}
 }
+
+public class NFCReceiver: Object, BroadcastReceiver {
+	var receiver: ((NFCMessage?) -> Void)?
+	public func onReceive(context: Context?, intent: Intent?) {
+    }
+    
+    static func didReceive(context: Context?, intent: Intent?) {
+    	print("Pavlo static func")
+    }
+}

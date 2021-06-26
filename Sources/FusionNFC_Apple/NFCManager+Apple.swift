@@ -1,7 +1,7 @@
 import FusionNFC_Common
 import CoreNFC
 
-public class NFCUtility {
+public class NFCManager {
     fileprivate class NDEFDelegate: NSObject {
         typealias Receiver = (NFCMessage?) -> Void
         var receiver: Receiver?
@@ -19,7 +19,7 @@ public class NFCUtility {
     }
 }
 
-extension NFCUtility: NFCUtilityProtocol {
+extension NFCManager: NFCManagerProtocol {
     public static var readingAvailable: Bool {
         NFCNDEFReaderSession.readingAvailable
     }
@@ -74,7 +74,7 @@ extension NFCUtility: NFCUtilityProtocol {
     }
 }
 
-extension NFCUtility.NDEFDelegate: NFCNDEFReaderSessionDelegate {
+extension NFCManager.NDEFDelegate: NFCNDEFReaderSessionDelegate {
     // MARK: - NFCNDEFReaderSessionDelegate
     func readerSessionDidBecomeActive(_ session: NFCNDEFReaderSession) {
     }
