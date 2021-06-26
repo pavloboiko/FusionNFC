@@ -182,7 +182,7 @@ extension NFCURIRecord {
 	}
 	
 	static func parseWellKnown(_ record: NdefRecord) -> NFCURIRecord? {
-		guard record.getType() == NdefRecord.RTD_URI else { return nil }
+//		guard record.getType() == NdefRecord.RTD_URI else { return nil }
 		
 		let payload = record.getPayload()
 		let uintArray = payload.map { UInt8(bitPattern: $0) }
@@ -206,8 +206,7 @@ extension NFCURIRecord {
 extension NFCTextRecord {
 	static func parse(_ record: NdefRecord?) -> NFCTextRecord? {
         guard let record = record,
-              record.getTnf() == NdefRecord.TNF_WELL_KNOWN,
-              record.getType() == NdefRecord.RTD_TEXT else {
+              record.getTnf() == NdefRecord.TNF_WELL_KNOWN else {
             return nil
         }        
 		let payload = record.getPayload()
