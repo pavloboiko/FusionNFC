@@ -205,10 +205,12 @@ extension NFCURIRecord {
 
 extension NFCTextRecord {
 	static func parse(_ record: NdefRecord?) -> NFCTextRecord? {
+		print("Pavlo NFCTextRecord parse start \(record != nil)")
         guard let record = record,
               record.getTnf() == NdefRecord.TNF_WELL_KNOWN else {
             return nil
-        }        
+        }
+        print("Pavlo NFCTextRecord first passed!")
 		let payload = record.getPayload()
 		let uintArray = payload.map { UInt8(bitPattern: $0) }
 		
