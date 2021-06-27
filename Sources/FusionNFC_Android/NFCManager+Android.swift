@@ -106,7 +106,7 @@ extension NFCReceiver {
     static func getRecords(records: [NdefRecord?]) -> NFCMessage {
         var nfcURIRecord: NFCURIRecord?
         var nfcTextRecord: NFCTextRecord?
-        
+        print("Pavlo getRecords records count = \(records.count)")
     	for record in records {
     		if let uriRecord = NFCURIRecord.parse(record) {
                 nfcURIRecord = uriRecord
@@ -236,7 +236,7 @@ extension NFCTextRecord {
         print("Pavlo NFCTextRecord third passed! langcode = \(String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii))")
         print("Pavlo NFCTextRecord third passed! text = \(String(bytes: uintArray[languageCodeLength + 1..<uintArray.count - languageCodeLength - 1], encoding: textEncoding))")
         
-        guard let languageCode = String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii),
+        guard languageCodeLength > 1, let languageCode = String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii),
               let text = String(bytes: uintArray[languageCodeLength + 1..<uintArray.count - languageCodeLength - 1], encoding: textEncoding) else {
             return nil
         }
