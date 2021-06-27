@@ -237,7 +237,7 @@ extension NFCTextRecord {
 //        print("Pavlo NFCTextRecord third passed! text = \(String(bytes: uintArray[languageCodeLength + 1..<uintArray.count - languageCodeLength - 1], encoding: textEncoding))")
         
         guard let languageCode = String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii),
-              let text = String(bytes: uintArray[languageCodeLength + 1..<uintArray.count - languageCodeLength - 1], encoding: textEncoding) else {
+              let text = String(bytes: uintArray[languageCodeLength + 1..<uintArray.count], encoding: textEncoding) else {
             return nil
         }
         print("Pavlo NFCTextRecord fourth passed! text = \(text) code = \(languageCode)")
