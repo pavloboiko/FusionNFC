@@ -35,6 +35,7 @@ extension NFCManager: NFCManagerProtocol {
 		NFCReceiver.shared.usage = .write
 		NFCReceiver.shared.message = message
 		
+		print("Pavlo write tag usage = \(NFCReceiver.shared.usage)")
 		enableNfcForegroundDispatch()
     }
     
@@ -76,6 +77,7 @@ public class NFCReceiver: Object, BroadcastReceiver {
     		return 
     	}
     	
+		print("Pavlo didReceive usage = \(NFCReceiver.shared.usage)")    	
 		if NFCReceiver.shared.usage == .read {
 			readTag(intent)
 		} else if NFCReceiver.shared.usage == .write {
@@ -84,16 +86,21 @@ public class NFCReceiver: Object, BroadcastReceiver {
 	}
  
  	private static func writeTag(_ intent: Intent) {
+ 		print("Pavlo writeTag message = \(NFCReceiver.shared.message != nil)")
  		guard let message = NFCReceiver.shared.message else { return }
 		let action = intent.getAction()  	
         if NfcAdapter.ACTION_TAG_DISCOVERED == action {
+        	print("Pavlo writeTag discovered")
             let tag: Tag? = intent.getParcelableExtra(name: NfcAdapter.EXTRA_TAG)
     		let records = createRecord(message)
+    		print("Pavlo writeTag records count = \(records.count)") 
     		let ndefMessage = NdefMessage(records: records)
     		if let ndef = Ndef.get(tag: tag) {
+        		print("Pavlo writeTag ndef get tag")    		
     			ndef.connect()
     			ndef.writeNdefMessage(msg: ndefMessage)
-    			ndef.close()    			
+    			ndef.close()
+        		print("Pavlo writeTag writeNdefMessage success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")    			
     		}    		
         }
  	}
