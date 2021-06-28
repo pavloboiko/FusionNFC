@@ -11,7 +11,7 @@ import FusionNFC_Common
 public class NFCManager {
 	private var currentActivity: Activity? { Application.currentActivity }
 	private var adapter: NfcAdapter? = nil  
-	private var receiver = NFCReceiver()
+	private var receiver = NFCReceiver()	
   
 	public required init(alertMessage: String) {
 		let nfcManager = self.currentActivity?.getSystemService(name: ContextStatic.NFC_SERVICE) as? NfcManager
@@ -25,15 +25,23 @@ extension NFCManager: NFCManagerProtocol {
     }
     
     public func readTag(_ completion: @escaping (NFCMessage?) -> Void) {
-    	print("pavlo read Tag called")
-		enableNfcForegroundDispatch()
-
+		NFCReceiver.shared.usage = .read
 		NFCReceiver.shared.receiver = completion
+		
+		enableNfcForegroundDispatch()
     }
     
     public func writeTag(_ message: NFCMessage) {
+		NFCReceiver.shared.usage = .write
+		NFCReceiver.shared.message = message
+		
+		enableNfcForegroundDispatch()
     }
     
+    public func disableForegroundDispatch() {
+		disableNfcForegroundDispatch()
+	}
+	
     private func enableNfcForegroundDispatch() {
         print("pavlo start enable")
 //        let intent = self.currentActivity?.getIntent()?.addFlags(flags: Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -45,6 +53,7 @@ extension NFCManager: NFCManagerProtocol {
     }
     
     private func disableNfcForegroundDispatch() {
+    	NFCReceiver.shared.message = nil
 		self.adapter?.disableForegroundDispatch(activity: self.currentActivity)
 	}
 }
@@ -52,7 +61,11 @@ extension NFCManager: NFCManagerProtocol {
 public class NFCReceiver: Object, BroadcastReceiver {
 	static let shared = NFCReceiver()
 	var receiver: ((NFCMessage?) -> Void)?
+	var usage: SessionUsage = .none
+	var message: NFCMessage?
+	
 	public func onReceive(context: Context?, intent: Intent?) {
+		
     }
     
     static func didReceive(context: Context?, intent: Intent?) {
@@ -62,7 +75,31 @@ public class NFCReceiver: Object, BroadcastReceiver {
     		NFCReceiver.shared.receiver?(nil)
     		return 
     	}
-    	let action = intent.getAction()
+    	
+		if NFCReceiver.shared.usage == .read {
+			readTag(intent)
+		} else if NFCReceiver.shared.usage == .write {
+			writeTag(intent)
+		}
+	}
+ 
+ 	private static func writeTag(_ intent: Intent) {
+ 		guard let message = NFCReceiver.shared.message else { return }
+		let action = intent.getAction()  	
+        if NfcAdapter.ACTION_TAG_DISCOVERED == action {
+            let tag: Tag? = intent.getParcelableExtra(name: NfcAdapter.EXTRA_TAG)
+    		let records = createRecord(message)
+    		let ndefMessage = NdefMessage(records: records)
+    		if let ndef = Ndef.get(tag: tag) {
+    			ndef.connect()
+    			ndef.writeNdefMessage(msg: ndefMessage)
+    			ndef.close()    			
+    		}    		
+        }
+ 	}
+ 	
+ 	private static func readTag(_ intent: Intent) {
+    	let action = intent.getAction() 	
         if NfcAdapter.ACTION_TAG_DISCOVERED == action ||
             NfcAdapter.ACTION_TECH_DISCOVERED == action ||
             NfcAdapter.ACTION_NDEF_DISCOVERED == action {
@@ -93,9 +130,37 @@ public class NFCReceiver: Object, BroadcastReceiver {
         } else {
           	print("Pavlo return nil cause of action")
             NFCReceiver.shared.receiver?(nil)        	
-        }
-	}
- 
+        } 		
+ 	}
+}
+
+extension NFCReceiver {
+	static func createRecord(_ message: NFCMessage) -> [NdefRecord] {
+		var records: [NdefRecord] = []
+		if let uriRecord = message.uriRecord {
+			let uri = uriRecord.url.absoluteString
+			if let record = NdefRecord.createUri(uriString: uri) {
+				records.append(record)	
+			}			
+		}
+		
+		if let textRecord = message.textRecord {
+			if let lang = textRecord.locale.languageCode {
+				let textBytes = Array(textRecord.string.utf8)
+				let langBytes = Array(lang.utf8)
+				let langLength = UInt8(langBytes.count)
+				var uintArray: [UInt8] = []
+				uintArray.append(langLength)
+				uintArray.append(contentsOf: langBytes)
+				uintArray.append(contentsOf: textBytes)
+				let payload = uintArray.map { Int8(bitPattern: $0) }
+				let record = NdefRecord(tnf: NdefRecord.TNF_WELL_KNOWN, _type: NdefRecord.RTD_TEXT, id: [], payload: payload)
+				records.append(record)
+			}
+		}
+    
+    	return records
+	}	
 }
 
 extension NFCReceiver {

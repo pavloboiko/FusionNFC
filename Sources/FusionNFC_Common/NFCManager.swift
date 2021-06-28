@@ -35,9 +35,11 @@ public enum SessionUsage {
 }
 
 public protocol NFCManagerProtocol {
-    init(alertMessage: String)
+    init(alertMessage: String)    
     
     static var readingAvailable: Bool { get }
     func readTag(_ completion: @escaping (NFCMessage?) -> Void)
     func writeTag(_ message: NFCMessage)
+    
+    func disableForegroundDispatch()
 }
