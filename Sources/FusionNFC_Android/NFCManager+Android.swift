@@ -32,6 +32,7 @@ extension NFCManager: NFCManagerProtocol {
     }
     
     public func writeTag(_ message: NFCMessage) {
+    	disableNfcForegroundDispatch()
 		NFCReceiver.shared.usage = .write
 		NFCReceiver.shared.message = message
 		
