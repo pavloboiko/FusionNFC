@@ -29,7 +29,7 @@ extension NFCManager: NFCManagerProtocol {
             completion(nil)
             return
         }
-        if NFCUtility.readingAvailable {
+        if NFCManager.readingAvailable {
             self.delegate.receiver = completion
             self.delegate.usage = .read
             session.begin()
@@ -43,7 +43,7 @@ extension NFCManager: NFCManagerProtocol {
         guard let session = readerSession else {
             return
         }
-        if NFCUtility.readingAvailable {
+        if NFCManager.readingAvailable {
             self.delegate.usage = .write
             
             var payloads: [NFCNDEFPayload] = []
