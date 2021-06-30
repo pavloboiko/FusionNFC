@@ -90,18 +90,20 @@ public class NFCReceiver: Object, BroadcastReceiver {
  		print("Pavlo writeTag message = \(NFCReceiver.shared.message != nil)")
  		guard let message = NFCReceiver.shared.message else { return }
 		let action = intent.getAction()  	
-        if NfcAdapter.ACTION_TAG_DISCOVERED == action {
+        if NfcAdapter.ACTION_TAG_DISCOVERED == action ||
+            NfcAdapter.ACTION_TECH_DISCOVERED == action ||
+            NfcAdapter.ACTION_NDEF_DISCOVERED == action {
         	print("Pavlo writeTag discovered")
             let tag: Tag? = intent.getParcelableExtra(name: NfcAdapter.EXTRA_TAG)
     		let records = createRecord(message)
     		print("Pavlo writeTag records count = \(records.count)") 
     		let ndefMessage = NdefMessage(records: records)
     		if let ndef = Ndef.get(tag: tag) {
-        		print("Pavlo writeTag ndef get tag")    		
+        		print("Pavlo writeTag ndef get tag")
     			ndef.connect()
     			ndef.writeNdefMessage(msg: ndefMessage)
     			ndef.close()
-        		print("Pavlo writeTag writeNdefMessage success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")    			
+        		print("Pavlo writeTag writeNdefMessage success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     		}    		
         }
  	}
@@ -234,6 +236,7 @@ let URI_PREFIX_MAP = [0x00: "",
 extension NFCURIRecord {
 	static func parse(_ record: NdefRecord?) -> NFCURIRecord? {
 		guard let record = record else { return nil }
+
 		let tnf = record.getTnf()
 		
 		if tnf == NdefRecord.TNF_WELL_KNOWN {
@@ -257,7 +260,7 @@ extension NFCURIRecord {
 	}
 	
 	static func parseWellKnown(_ record: NdefRecord) -> NFCURIRecord? {
-//		guard record.getType() == NdefRecord.RTD_URI else { return nil }
+		guard record.getType() == NdefRecord.RTD_URI else { return nil }
 		
 		let payload = record.getPayload()
 		let uintArray = payload.map { UInt8(bitPattern: $0) }
@@ -281,10 +284,7 @@ extension NFCURIRecord {
 extension NFCTextRecord {
 	static func parse(_ record: NdefRecord?) -> NFCTextRecord? {
 		print("Pavlo NFCTextRecord parse start \(record != nil)")
-        guard let record = record,
-              record.getTnf() == NdefRecord.TNF_WELL_KNOWN else {
-            return nil
-        }
+        guard let record = record,              record.getTnf() == NdefRecord.TNF_WELL_KNOWN,              record.getType() == NdefRecord.RTD_URI else {            return nil        }
         print("Pavlo NFCTextRecord first passed!")
 		let payload = record.getPayload()
 		let uintArray = payload.map { UInt8(bitPattern: $0) }
