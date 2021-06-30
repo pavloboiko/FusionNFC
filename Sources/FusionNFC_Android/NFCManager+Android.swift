@@ -154,20 +154,20 @@ extension NFCReceiver {
 			records.append(record)
 		}
 		
-		if let textRecord = message.textRecord {
-			if let lang = textRecord.locale.languageCode {
-				let textBytes = Array(textRecord.string.utf8)
-				let langBytes = Array(lang.utf8)
-				let langLength = UInt8(langBytes.count)
-				var uintArray: [UInt8] = []
-				uintArray.append(langLength)
-				uintArray.append(contentsOf: langBytes)
-				uintArray.append(contentsOf: textBytes)
-				let payload = uintArray.map { Int8(bitPattern: $0) }
-				let record = NdefRecord(tnf: NdefRecord.TNF_WELL_KNOWN, _type: NdefRecord.RTD_TEXT, id: [], payload: payload)
-				records.append(record)
-			}
-		}
+//		if let textRecord = message.textRecord {
+//			if let lang = textRecord.locale.languageCode {
+//				let textBytes = Array(textRecord.string.utf8)
+//				let langBytes = Array(lang.utf8)
+//				let langLength = UInt8(langBytes.count)
+//				var uintArray: [UInt8] = []
+//				uintArray.append(langLength)
+//				uintArray.append(contentsOf: langBytes)
+//				uintArray.append(contentsOf: textBytes)
+//				let payload = uintArray.map { Int8(bitPattern: $0) }
+//				let record = NdefRecord(tnf: NdefRecord.TNF_WELL_KNOWN, _type: NdefRecord.RTD_TEXT, id: [], payload: payload)
+//				records.append(record)
+//			}
+//		}
     
     	return records
 	}	
