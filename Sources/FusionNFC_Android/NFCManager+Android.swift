@@ -95,7 +95,7 @@ public class NFCReceiver: Object, BroadcastReceiver {
             NfcAdapter.ACTION_NDEF_DISCOVERED == action {
         	print("Pavlo writeTag discovered")
             let tag: Tag? = intent.getParcelableExtra(name: NfcAdapter.EXTRA_TAG)
-    		let records = createRecord(message)
+    		let records: [NdefRecord?] = createRecord(message)
     		print("Pavlo writeTag records count = \(records.count) tag detect = \(tag != nil)") 
     		print("Pavlo writeTag toJavaParameter\(records.toJavaParameter())")
     		let ndefMessage = NdefMessage(records: records)
