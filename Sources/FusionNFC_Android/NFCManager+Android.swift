@@ -45,11 +45,6 @@ extension NFCManager: NFCManagerProtocol {
 	}
 	
     private func enableNfcForegroundDispatch() {
-    	let testInt = 1
-    	let testInt2 = 2
-    	print("Pavlo testInt toJavaParameter = \(testInt.toJavaParameter())")
-    	let testArray = [testInt.toJavaParameter(), testInt2.toJavaParameter()]
-    	print("Pavlo testArray toJavaParameter = \(testArray.toJavaParameter())")
         print("pavlo start enable")
 //        let intent = self.currentActivity?.getIntent()?.addFlags(flags: Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		let intent =  Intent(packageContext: self.currentActivity, cls: receiver.getClass())
@@ -154,11 +149,11 @@ public class NFCReceiver: Object, BroadcastReceiver {
 extension NFCReceiver {
 	static func createRecord(_ message: NFCMessage) -> [NdefRecord?] {
 		var records: [NdefRecord?] = []
-//		if let uriRecord = message.uriRecord {
-//			let uri = uriRecord.url.absoluteString
-//			let record = NdefRecord.createUri(uriString: uri)
-//			records.append(record)
-//		}
+		if let uriRecord = message.uriRecord {
+			let uri = uriRecord.url.absoluteString
+			let record = NdefRecord.createUri(uriString: uri)
+			records.append(record)
+		}
 		
 		if let textRecord = message.textRecord {
 			if let lang = textRecord.locale.languageCode {
