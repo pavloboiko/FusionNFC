@@ -96,7 +96,7 @@ public class NFCReceiver: Object, BroadcastReceiver {
         	print("Pavlo writeTag discovered")
             let tag: Tag? = intent.getParcelableExtra(name: NfcAdapter.EXTRA_TAG)
     		let records = createRecord(message)
-    		print("Pavlo writeTag records count = \(records.count)") 
+    		print("Pavlo writeTag records count = \(records.count) tag detect = \(tag != nil)") 
     		let ndefMessage = NdefMessage(records: records)
     		if let ndef = Ndef.get(tag: tag) {
         		print("Pavlo writeTag ndef get tag")
@@ -284,7 +284,11 @@ extension NFCURIRecord {
 extension NFCTextRecord {
 	static func parse(_ record: NdefRecord?) -> NFCTextRecord? {
 		print("Pavlo NFCTextRecord parse start \(record != nil)")
-        guard let record = record,              record.getTnf() == NdefRecord.TNF_WELL_KNOWN,              record.getType() == NdefRecord.RTD_URI else {            return nil        }
+        guard let record = record,
+              record.getTnf() == NdefRecord.TNF_WELL_KNOWN,
+              record.getType() == NdefRecord.RTD_TEXT else {
+            return nil
+        }
         print("Pavlo NFCTextRecord first passed!")
 		let payload = record.getPayload()
 		let uintArray = payload.map { UInt8(bitPattern: $0) }
