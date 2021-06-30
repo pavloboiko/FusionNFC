@@ -98,6 +98,7 @@ public class NFCReceiver: Object, BroadcastReceiver {
     		let records = createRecord(message)
     		print("Pavlo writeTag records count = \(records.count) tag detect = \(tag != nil)") 
     		let ndefMessage = NdefMessage(records: records)
+    		print("Pavlo writeTag get ndefMessage")
     		if let ndef = Ndef.get(tag: tag) {
         		print("Pavlo writeTag ndef get tag")
     			ndef.connect()
@@ -145,13 +146,12 @@ public class NFCReceiver: Object, BroadcastReceiver {
 }
 
 extension NFCReceiver {
-	static func createRecord(_ message: NFCMessage) -> [NdefRecord] {
-		var records: [NdefRecord] = []
+	static func createRecord(_ message: NFCMessage) -> [NdefRecord?] {
+		var records: [NdefRecord?] = []
 		if let uriRecord = message.uriRecord {
 			let uri = uriRecord.url.absoluteString
-			if let record = NdefRecord.createUri(uriString: uri) {
-				records.append(record)	
-			}			
+			let record = NdefRecord.createUri(uriString: uri)
+			records.append(record)
 		}
 		
 		if let textRecord = message.textRecord {
