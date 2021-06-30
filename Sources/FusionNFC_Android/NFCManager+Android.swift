@@ -97,6 +97,7 @@ public class NFCReceiver: Object, BroadcastReceiver {
             let tag: Tag? = intent.getParcelableExtra(name: NfcAdapter.EXTRA_TAG)
     		let records = createRecord(message)
     		print("Pavlo writeTag records count = \(records.count) tag detect = \(tag != nil)") 
+    		print("Pavlo writeTag toJavaParameter\(records.toJavaParameter())")
     		let ndefMessage = NdefMessage(records: records)
     		print("Pavlo writeTag get ndefMessage")
     		if let ndef = Ndef.get(tag: tag) {
