@@ -45,6 +45,8 @@ extension NFCManager: NFCManagerProtocol {
 	}
 	
     private func enableNfcForegroundDispatch() {
+    	let testArray = [1, 2, 3]
+    	print("Pavlo testArray toJavaParameter = \(testArray.toJavaParameter())")
         print("pavlo start enable")
 //        let intent = self.currentActivity?.getIntent()?.addFlags(flags: Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		let intent =  Intent(packageContext: self.currentActivity, cls: receiver.getClass())
