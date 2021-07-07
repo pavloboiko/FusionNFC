@@ -36,7 +36,6 @@ extension NFCManager: NFCManagerProtocol {
 		NFCReceiver.shared.usage = .write
 		NFCReceiver.shared.message = message
 		
-		print("Pavlo write tag usage = \(NFCReceiver.shared.usage)")
 		enableNfcForegroundDispatch()
     }
     
@@ -45,13 +44,9 @@ extension NFCManager: NFCManagerProtocol {
 	}
 	
     private func enableNfcForegroundDispatch() {
-        print("pavlo start enable")
-//        let intent = self.currentActivity?.getIntent()?.addFlags(flags: Intent.FLAG_ACTIVITY_SINGLE_TOP)
 		let intent =  Intent(packageContext: self.currentActivity, cls: receiver.getClass())
-//		print("pavlo receiver get class = \(receiver.getClass())")
         let nfcPendingIntent = PendingIntent.getBroadcast(context: self.currentActivity, requestCode: 0, intent: intent, flags: 0)
-        self.adapter?.enableForegroundDispatch(activity: self.currentActivity, intent: nfcPendingIntent, filters: [], techLists: [])
-        print("pavlo end enable")        
+        self.adapter?.enableForegroundDispatch(activity: self.currentActivity, intent: nfcPendingIntent, filters: [], techLists: [])  
     }
     
     private func disableNfcForegroundDispatch() {
@@ -71,14 +66,11 @@ public class NFCReceiver: Object, BroadcastReceiver {
     }
     
     static func didReceive(context: Context?, intent: Intent?) {
-    	print("Pavlo static func")
     	guard let intent = intent else {
-    		print("Pavlo return nil cause of instant")
     		NFCReceiver.shared.receiver?(nil)
     		return 
     	}
     	
-		print("Pavlo didReceive usage = \(NFCReceiver.shared.usage)")    	
 		if NFCReceiver.shared.usage == .read {
 			readTag(intent)
 		} else if NFCReceiver.shared.usage == .write {
@@ -87,24 +79,19 @@ public class NFCReceiver: Object, BroadcastReceiver {
 	}
  
  	private static func writeTag(_ intent: Intent) {
- 		print("Pavlo writeTag message = \(NFCReceiver.shared.message != nil)")
  		guard let message = NFCReceiver.shared.message else { return }
 		let action = intent.getAction()  	
         if NfcAdapter.ACTION_TAG_DISCOVERED == action ||
             NfcAdapter.ACTION_TECH_DISCOVERED == action ||
             NfcAdapter.ACTION_NDEF_DISCOVERED == action {
-        	print("Pavlo writeTag discovered")
             let tag: Tag? = intent.getParcelableExtra(name: NfcAdapter.EXTRA_TAG)
     		let records: [NdefRecord?] = createRecord(message)
-    		print("Pavlo writeTag records count = \(records.count) tag detect = \(tag != nil)") 
     		let ndefMessage = NdefMessage(records: records)
-    		print("Pavlo writeTag get ndefMessage")
+
     		if let ndef = Ndef.get(tag: tag) {
-        		print("Pavlo writeTag ndef get tag")
     			ndef.connect()
     			ndef.writeNdefMessage(msg: ndefMessage)
     			ndef.close()
-        		print("Pavlo writeTag writeNdefMessage success!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     		}    		
         }
  	}
@@ -125,21 +112,16 @@ public class NFCReceiver: Object, BroadcastReceiver {
             } 
                         
             if msgs.isEmpty {
-            	print("Pavlo return nil cause of msg")
             	NFCReceiver.shared.receiver?(nil)
-            } else {
-            	print("Pavlo didReceive messages count = \(msgs.count)")
-            	print("Pavlo didReceive messages = \(msgs)")            	
+            } else {        	
             	let nfcMessage = parse(message: msgs[0])
             	if nfcMessage.textRecord != nil || nfcMessage.uriRecord != nil {
             		NFCReceiver.shared.receiver?(parse(message: msgs[0]))	
             	} else {
-            		print("Pavlo return nil cause of nfcMessage")
             		NFCReceiver.shared.receiver?(nil)
             	}            	
             }
         } else {
-          	print("Pavlo return nil cause of action")
             NFCReceiver.shared.receiver?(nil)        	
         } 		
  	}
@@ -181,7 +163,7 @@ extension NFCReceiver {
     static func getRecords(records: [NdefRecord?]) -> NFCMessage {
         var nfcURIRecord: NFCURIRecord?
         var nfcTextRecord: NFCTextRecord?
-        print("Pavlo getRecords records count = \(records.count)")
+
     	for record in records {
     		if let uriRecord = NFCURIRecord.parse(record) {
                 nfcURIRecord = uriRecord
@@ -283,16 +265,15 @@ extension NFCURIRecord {
 
 extension NFCTextRecord {
 	static func parse(_ record: NdefRecord?) -> NFCTextRecord? {
-		print("Pavlo NFCTextRecord parse start \(record != nil)")
         guard let record = record,
               record.getTnf() == NdefRecord.TNF_WELL_KNOWN,
               record.getType() == NdefRecord.RTD_TEXT else {
             return nil
         }
-        print("Pavlo NFCTextRecord first passed!")
+        
 		let payload = record.getPayload()
 		let uintArray = payload.map { UInt8(bitPattern: $0) }
-        print("Pavlo NFCTextRecord second passed!")		
+
         /*
          * payload[0] contains the "Status Byte Encodings" field, per the
          * NFC Forum "Text Record Type Definition" section 3.2.1.
@@ -308,18 +289,14 @@ extension NFCTextRecord {
          */
         let textEncoding: String.Encoding = ((uintArray[0] & 0o0200) == 0) ? .utf8 : .utf16
         let languageCodeLength = Int(uintArray[0] & 0o0077)
-        print("Pavlo NFCTextRecord third passed! textEncoding = \(textEncoding) length = \(languageCodeLength)")
-        print("Pavlo NFCTextRecord third passed! uintArray = \(uintArray)")
-//        print("Pavlo NFCTextRecord third passed! langcode = \(String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii))")
-//        print("Pavlo NFCTextRecord third passed! text = \(String(bytes: uintArray[languageCodeLength + 1..<uintArray.count - languageCodeLength - 1], encoding: textEncoding))")
-        
+     
         guard let languageCode = String(bytes: uintArray[1..<languageCodeLength], encoding: .ascii),
               let text = String(bytes: uintArray[languageCodeLength + 1..<uintArray.count], encoding: textEncoding) else {
             return nil
         }
-        print("Pavlo NFCTextRecord fourth passed! text = \(text) code = \(languageCode)")
+
         let textRecord = NFCTextRecord(string: text, locale: Locale(identifier: languageCode))
-        print("Pavlo NFCTextRecord final passed!")
+
         return textRecord
 	}
 	
